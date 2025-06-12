@@ -40,6 +40,13 @@
       align-items: center;
       z-index: 10;
       padding: 20px;
+      opacity: 1;
+      transition: opacity 3s ease;
+    }
+
+    #present-screen.fade-out {
+      opacity: 0;
+      pointer-events: none;
     }
 
     #present-screen h2 {
@@ -62,9 +69,14 @@
       transition: background-color 0.3s ease, color 0.3s ease;
     }
 
-    #open-button:hover {
+    #open-button:hover:not(:disabled) {
       background-color: #ff6699;
       color: #fff;
+    }
+
+    #open-button:disabled {
+      cursor: default;
+      opacity: 0.6;
     }
 
     /* Conteúdo principal - inicialmente oculto */
@@ -76,6 +88,13 @@
       width: 100%;
       max-width: 400px;
       text-align: center;
+      opacity: 0;
+      transition: opacity 1.5s ease;
+    }
+
+    #main-content.show {
+      display: flex;
+      opacity: 1;
     }
 
     #main-content h1 {
@@ -166,7 +185,15 @@
   </div>
 
   <script>
-    // Timer desde 20/10/2020 às 20h
+    const presentScreen = document.getElementById("present-screen");
+    const openButton = document.getElementById("open-button");
+    const mainContent = document.getElementById("main-content");
+    const track = document.querySelector(".carousel-track");
+    let index = 0;
+    let timerInterval;
+    let slideInterval;
+
+    // Função timer
     function updateTimer() {
       const startDate = new Date("2020-10-20T20:00:00");
       const now = new Date();
@@ -185,24 +212,29 @@
       `;
     }
 
-    // Carrossel automático
-    const track = document.querySelector(".carousel-track");
-    let index = 0;
-
+    // Função carrossel
     function slide() {
       index = (index + 1) % 5; // 5 imagens
       track.style.transform = `translateX(-${index * 100}%)`;
     }
 
-    // Evento para abrir o presente
-    document.getElementById("open-button").addEventListener("click", () => {
-      document.getElementById("present-screen").style.display = "none";
-      const mainContent = document.getElementById("main-content");
-      mainContent.style.display = "flex";
-      
-      updateTimer();
-      setInterval(updateTimer, 1000);
-      setInterval(slide, 3000);
+    openButton.addEventListener("click", () => {
+      openButton.disabled = true;
+      openButton.textContent = "Abrindo...";
+
+      // Inicia fade out com duração 3s
+      presentScreen.classList.add("fade-out");
+
+      // Depois de 3s, esconde a tela e mostra conteúdo
+      setTimeout(() => {
+        presentScreen.style.display = "none";
+        mainContent.classList.add("show");
+
+        // Começa timer e carrossel
+        updateTimer();
+        timerInterval = setInterval(updateTimer, 1000);
+        slideInterval = setInterval(slide, 3000);
+      }, 3000);
     });
   </script>
 </body>
