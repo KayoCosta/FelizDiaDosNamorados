@@ -17,23 +17,74 @@
       font-family: 'Quicksand', sans-serif;
       background: linear-gradient(160deg, #ffe6eb, #fff);
       color: #b30059;
+      min-height: 100vh;
       display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 20px;
+    }
+
+    /* Tela do presente (overlay) */
+    #present-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: linear-gradient(135deg, #ff6699, #ff3366);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+      padding: 20px;
+    }
+
+    #present-screen h2 {
+      font-size: 2.4rem;
+      margin-bottom: 30px;
+      font-weight: 600;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    #open-button {
+      background-color: #fff;
+      color: #ff3366;
+      font-weight: 700;
+      border: none;
+      border-radius: 30px;
+      padding: 15px 40px;
+      font-size: 1.3rem;
+      cursor: pointer;
+      box-shadow: 0 5px 12px rgba(0,0,0,0.2);
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    #open-button:hover {
+      background-color: #ff6699;
+      color: #fff;
+    }
+
+    /* Conteúdo principal - inicialmente oculto */
+    #main-content {
+      display: none;
       flex-direction: column;
       align-items: center;
       justify-content: start;
-      padding: 20px 15px;
-      min-height: 100vh;
+      width: 100%;
+      max-width: 400px;
       text-align: center;
     }
 
-    h1 {
+    #main-content h1 {
       font-size: 2.2rem;
       margin: 10px 0 15px;
     }
 
     .carousel {
       width: 100%;
-      max-width: 380px;
       height: 500px;
       overflow: hidden;
       border-radius: 20px;
@@ -51,7 +102,7 @@
     .carousel-track {
       display: flex;
       transition: transform 0.5s ease-in-out;
-      width: 500%; /* 5 imagens */
+      width: 500%;
       height: 110%;
     }
 
@@ -80,7 +131,7 @@
     }
 
     @media (min-width: 500px) {
-      h1 {
+      #main-content h1 {
         font-size: 2.4rem;
       }
 
@@ -91,21 +142,28 @@
   </style>
 </head>
 <body>
-  <h1>Feliz Dia dos Namorados, meu amor!</h1>
-
-  <div class="carousel">
-    <div class="carousel-track">
-      <img src="img1.jpg" alt="Foto 1" />
-      <img src="img2.jpeg" alt="Foto 2" />
-      <img src="img3.jpeg" alt="Foto 3" />
-      <img src="img4.jpeg" alt="Foto 4" />
-      <img src="img5.jpeg" alt="Foto 5" />
-    </div>
+  <!-- Tela de presente -->
+  <div id="present-screen">
+    <h2>Clique para abrir o seu presente 💝</h2>
+    <button id="open-button">Abrir</button>
   </div>
 
-  <div id="timer"></div>
+  <!-- Conteúdo principal -->
+  <div id="main-content">
+    <h1>Feliz Dia dos Namorados, meu amor! 💖</h1>
 
-  <h1>TE AMO! 💖</h1>
+    <div class="carousel">
+      <div class="carousel-track">
+        <img src="img1.jpg" alt="Foto 1" />
+        <img src="img2.jpeg" alt="Foto 2" />
+        <img src="img3.jpeg" alt="Foto 3" />
+        <img src="img4.jpeg" alt="Foto 4" />
+        <img src="img5.jpeg" alt="Foto 5" />
+      </div>
+    </div>
+
+    <div id="timer"></div>
+  </div>
 
   <script>
     // Timer desde 20/10/2020 às 20h
@@ -127,9 +185,6 @@
       `;
     }
 
-    setInterval(updateTimer, 1000);
-    updateTimer();
-
     // Carrossel automático
     const track = document.querySelector(".carousel-track");
     let index = 0;
@@ -139,7 +194,16 @@
       track.style.transform = `translateX(-${index * 100}%)`;
     }
 
-    setInterval(slide, 5000); // troca a cada 3s
+    // Evento para abrir o presente
+    document.getElementById("open-button").addEventListener("click", () => {
+      document.getElementById("present-screen").style.display = "none";
+      const mainContent = document.getElementById("main-content");
+      mainContent.style.display = "flex";
+      
+      updateTimer();
+      setInterval(updateTimer, 1000);
+      setInterval(slide, 3000);
+    });
   </script>
 </body>
 </html>
